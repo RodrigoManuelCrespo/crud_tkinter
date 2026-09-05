@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from crud import CRUDFrame
-from repository import Repository
+from mariadb_repository import MariaDBRepository
 
 
 class PeliculasCRUD(CRUDFrame):
@@ -13,7 +13,9 @@ class PeliculasCRUD(CRUDFrame):
             ("Año", "anio"),
             ("Duración", "duracion"),
         ]
-        super().__init__(master, "Películas", fields, Repository())
+        columnas = [clave for _, clave in fields]
+        repositorio = MariaDBRepository(table="peliculas", columns=columnas)
+        super().__init__(master, "Películas", fields, repositorio)
 
 
 class DirectoresCRUD(CRUDFrame):
@@ -24,7 +26,9 @@ class DirectoresCRUD(CRUDFrame):
             ("Año de nacimiento", "anio_nacimiento"),
             ("Cantidad de películas", "cant_peliculas"),
         ]
-        super().__init__(master, "Directores", fields, Repository())
+        columnas = [clave for _, clave in fields]
+        repositorio = MariaDBRepository(table="directores", columns=columnas)
+        super().__init__(master, "Directores", fields, repositorio)
 
 
 def main():
