@@ -51,6 +51,7 @@ def inicializar_bd():
             titulo VARCHAR(150) NOT NULL,
             anio INT,
             genero VARCHAR(50),
+            duracion INT,
             id_director INT,
             FOREIGN KEY (id_director) REFERENCES director(id_director) 
             ON DELETE CASCADE ON UPDATE CASCADE
