@@ -38,8 +38,18 @@ class CRUDFrame(tk.Frame):
         marco = tk.LabelFrame(self, text=f"{self.nombre_entidad} cargados", padx=10, pady=10)
         marco.pack(padx=10, pady=5, fill="both", expand=True)
 
+        # encabezado fijo, solo informativo, no intenta alinear con las filas
+        titulos = ["ID"]
+        for campo in self.campos:
+            titulos.append(campo["label"])
+        encabezado = " | ".join(titulos)
+        tk.Label(marco, text=encabezado, font=("Arial", 10, "bold")).pack(fill="x")
+
+        # self.lista es el widget del listado, es un objeto con metodos.
         self.lista = tk.Listbox(marco)
         self.lista.pack(fill="both", expand=True)
+        # <<ListboxSelect>> es evento virtual nartivo de tkinter, nos sirve para guardar el id de la fila.
+        # si selecciona una fila se ejecuta la funcion seleccionar_item
         self.lista.bind("<<ListboxSelect>>", self.seleccionar_item)
 
     def crear_botones(self):
@@ -51,13 +61,8 @@ class CRUDFrame(tk.Frame):
         tk.Button(marco, text="Eliminar", width=10, command=self.eliminar).grid(row=0, column=2, padx=5)
         tk.Button(marco, text="Limpiar", width=10, command=self.limpiar).grid(row=0, column=3, padx=5)
 
-    def obtener_valores(self):
-        return {clave: entrada.get().strip() for clave, entrada in self.entries.items()}
-
-    def hay_campos_vacios(self, valores):
-        return any(valor == "" for valor in valores.values())
-
     def refrescar_lista(self):
+        # metodo de actualizar todo mediante la base
         self.lista.delete(0, tk.END)
         for item in self.repositorio.read_all():
             valores_texto = []
@@ -67,9 +72,11 @@ class CRUDFrame(tk.Frame):
             self.lista.insert(tk.END, f"#{item['id']} - {resumen}")
 
     def seleccionar_item(self, event):
+        # curselection devuelve index del elemento seleccionado, lo guarda como estado interno
         seleccion = self.lista.curselection()
         if not seleccion:
             return
+        # devuelve una tupla por eso seleccionamos el posicion 
         indice = seleccion[0]
         item = self.repositorio.read_all()[indice]
         self.selected_id = item["id"]
@@ -111,3 +118,9 @@ class CRUDFrame(tk.Frame):
             entrada.delete(0, tk.END)
         self.selected_id = None
         self.lista.selection_clear(0, tk.END)
+
+    def obtener_valores(self):
+        return {clave: entrada.get().strip() for clave, entrada in self.entries.items()}
+
+    def hay_campos_vacios(self, valores):
+        return any(valor == "" for valor in valores.values())
