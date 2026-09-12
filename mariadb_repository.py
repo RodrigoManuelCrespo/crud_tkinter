@@ -24,7 +24,9 @@ class MariaDBRepository:
     def create(self, data):
         columnas = ", ".join(self.columns)
         placeholders = ", ".join("?" for _ in self.columns)
-        valores = tuple(data[columna] for columna in self.columns)
+        valores = []
+        for columna in self.columns:
+            valores.append(data[columna])
         try:
             self.cursor.execute(
                 f"INSERT INTO {self.table}({columnas}) VALUES({placeholders})",
@@ -53,7 +55,10 @@ class MariaDBRepository:
 
     def update(self, item_id, data):
         asignaciones = ", ".join(f"{columna} = ?" for columna in self.columns)
-        valores = tuple(data[columna] for columna in self.columns) + (item_id,)
+        valores = []
+        for columna in self.columns:
+            valores.append(data[columna])
+        valores.append(item_id)
         try:
             self.cursor.execute(
                 f"UPDATE {self.table} SET {asignaciones} WHERE id = ?",
@@ -65,7 +70,7 @@ class MariaDBRepository:
 
     def delete(self, item_id):
         try:
-            self.cursor.execute(f"DELETE FROM {self.table} WHERE id = ?", (item_id,))
+            self.cursor.execute(f"DELETE FROM {self.table} WHERE id = ?", [item_id])
             self.conexion.commit()
         except mariadb.Error as error:
             print(f"Error al eliminar el registro: {error}")
