@@ -36,12 +36,20 @@ class MariaDBRepository:
 
     def read_all(self):
         try:
+            # ejecuta la query con el select devolviendo todos los datos de la tabla
             self.cursor.execute(f"SELECT id, {', '.join(self.columns)} FROM {self.table}")
+            # ejecuta la consulta y devuelve todo en forma de tupla
             filas = self.cursor.fetchall()
         except mariadb.Error as error:
             print(f"Error al leer los registros: {error}")
             return []
-        return [dict(zip(["id"] + self.columns, fila)) for fila in filas]
+        resultado = []
+        for fila in filas:
+            item = {"id": fila[0]}
+            for indice, columna in enumerate(self.columns):
+                item[columna] = fila[indice + 1]
+            resultado.append(item)
+        return resultado
 
     def update(self, item_id, data):
         asignaciones = ", ".join(f"{columna} = ?" for columna in self.columns)
