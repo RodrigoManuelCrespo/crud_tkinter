@@ -3,11 +3,11 @@ from tkinter import messagebox
 
 
 class CRUDFrame(tk.Frame):
-    def __init__(self, contenedor, nombre_entidad, campos, repositorio):
+    def __init__(self, contenedor, nombre_entidad, campos, bd):
         super().__init__(contenedor)
         self.nombre_entidad = nombre_entidad
         self.campos = campos
-        self.repositorio = repositorio
+        self.bd = bd
         self.entries = {}
         self.selected_id = None
 
@@ -64,7 +64,7 @@ class CRUDFrame(tk.Frame):
     def refrescar_lista(self):
         # metodo de actualizar todo mediante la base
         self.lista.delete(0, tk.END)
-        for item in self.repositorio.read_all():
+        for item in self.bd.read_all():
             valores_texto = []
             for campo in self.campos:
                 valores_texto.append(str(item.get(campo["columna"], "")))
@@ -78,7 +78,7 @@ class CRUDFrame(tk.Frame):
             return
         # devuelve una tupla por eso seleccionamos el posicion 
         indice = seleccion[0]
-        item = self.repositorio.read_all()[indice]
+        item = self.bd.read_all()[indice]
         self.selected_id = item["id"]
         for clave, entrada in self.entries.items():
             entrada.delete(0, tk.END)
@@ -89,7 +89,7 @@ class CRUDFrame(tk.Frame):
         if self.hay_campos_vacios(valores):
             messagebox.showerror("Error", "Todos los campos son obligatorios.")
             return
-        self.repositorio.create(valores)
+        self.bd.create(valores)
         self.refrescar_lista()
         self.limpiar()
 
@@ -101,7 +101,7 @@ class CRUDFrame(tk.Frame):
         if self.hay_campos_vacios(valores):
             messagebox.showerror("Error", "Todos los campos son obligatorios.")
             return
-        self.repositorio.update(self.selected_id, valores)
+        self.bd.update(self.selected_id, valores)
         self.refrescar_lista()
         self.limpiar()
 
@@ -109,7 +109,7 @@ class CRUDFrame(tk.Frame):
         if self.selected_id is None:
             messagebox.showerror("Error", "Seleccioná un registro de la lista antes de eliminar.")
             return
-        self.repositorio.delete(self.selected_id)
+        self.bd.delete(self.selected_id)
         self.refrescar_lista()
         self.limpiar()
 

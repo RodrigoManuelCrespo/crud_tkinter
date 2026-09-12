@@ -16,8 +16,8 @@ class PeliculasCRUD(CRUDFrame):
         columnas = []
         for campo in campos:
             columnas.append(campo["columna"])
-        repositorio = MariaDBRepository(table="peliculas", columns=columnas)
-        super().__init__(contenedor, "Películas", campos, repositorio)
+        bd = MariaDBRepository(table="peliculas", columns=columnas)
+        super().__init__(contenedor, "Películas", campos, bd)
 
 
 class DirectoresCRUD(CRUDFrame):
@@ -31,8 +31,8 @@ class DirectoresCRUD(CRUDFrame):
         columnas = []
         for campo in campos:
             columnas.append(campo["columna"])
-        repositorio = MariaDBRepository(table="directores", columns=columnas)
-        super().__init__(contenedor, "Directores", campos, repositorio)
+        bd = MariaDBRepository(table="directores", columns=columnas)
+        super().__init__(contenedor, "Directores", campos, bd)
 
 
 def main():
