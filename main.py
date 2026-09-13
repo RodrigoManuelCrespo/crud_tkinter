@@ -36,16 +36,12 @@ class DirectoresCRUD(CRUDFrame):
 
 
 def main():
-    # crea ventana
     root = tk.Tk()
     root.title("Sistema CRUD")
     root.geometry("650x600")
 
-    # crea los tabs
     pestañas = ttk.Notebook(root)
-    # fill llena ejes x e y, expand si se agranda la pantalla que ocupe todo el ancho
     pestañas.pack(fill="both", expand=True)
-    # ejecuta el init de pelicula, una vez generado eso
     pestañas.add(PeliculasCRUD(pestañas), text="Películas")
     pestañas.add(DirectoresCRUD(pestañas), text="Directores")
 

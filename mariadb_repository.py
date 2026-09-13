@@ -38,9 +38,7 @@ class MariaDBRepository:
 
     def read_all(self):
         try:
-            # ejecuta la query con el select devolviendo todos los datos de la tabla
             self.cursor.execute(f"SELECT id, {', '.join(self.columns)} FROM {self.table}")
-            # ejecuta la consulta y devuelve todo en forma de tupla
             filas = self.cursor.fetchall()
         except mariadb.Error as error:
             print(f"Error al leer los registros: {error}")
